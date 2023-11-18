@@ -11,27 +11,33 @@ dotenv.config()
 const stripeKey = stripe(process.env.STRIPE_SECRET_KEY)
 
 const createCheckoutSession = async (req, res) => {
-  console.log("accediste...")
+  // 1. OBTENER EL USUARIO
+  const userID = req.user.id
+  console.log(userID)
 
-  // 1. OBTENER EL USUARIO Y SU ID CON CORREO
+  // 2. BUSCAR EN BASE DE DATOS
+  const foundUser = await User.findById(userID).lean()
+  console.log(foundUser)
 
-  const user = {
-    id: "123",
-    email: "m@mikenieva.com",
-  }
+  // 3. CREACIÓN DEL CARRITO DE COMPRAS U OBTENCIÓN DEL USUARIO
 
-  // 2. CREACIÓN DEL CARRITO DE COMPRAS O OBTENCIÓN DEL USUARIO
+  // const foundCart = await Cart.findById(foundUser.cart).lean() => 6558e1ff55fec44c463bd837
+  // const foundCart = await Cart.findById(foundUser.cart).lean().populate() => { products: [{_id:6558e1ff55fec44c463bd837, quantity: 4, priceID: "price_123u1231" }]
 
-  // 3. CREACIÓN DE CHECKOUT EN STRIPE
+  const foundCart = await Cart.findById(foundUser.cart).lean().populate()
+  console.log(foundCart)
 
-  const line_items = [
-    {
-      price: "price_1O8pBDCl7xMuNYvuspXlFIcZ",
-      quantity: 1,
-    },
-  ]
+  // 4. ACOMODAR LOS DATOS DEL CARRITO PARA STRIPE
+  const line_items = foundCart.products.map((productToBuy) => {
+    return {
+      price: productToBuy.priceID,
+      quantity: productToBuy.quantity,
+    }
+  })
 
-  console.log(stripeKey)
+  console.log(line_items)
+
+  // 5. CREACIÓN DE CHECKOUT EN STRIPE
 
   try {
     const session = await stripeKey.checkout.sessions.create({
@@ -39,7 +45,7 @@ const createCheckoutSession = async (req, res) => {
       mode: "payment",
       success_url: "https://google.com",
       cancel_url: "https://yahoo.com",
-      customer_email: user.email,
+      customer_email: foundUser.email,
     })
     console.log("session", session)
 

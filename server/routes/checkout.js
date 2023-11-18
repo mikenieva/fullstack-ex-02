@@ -6,7 +6,12 @@ import authorization from "./../middleware/authorization.js"
 
 const router = express.Router()
 
-router.get("/create-checkout-session", checkoutController.createCheckoutSession)
+router.get(
+  "/create-checkout-session",
+  authorization,
+  checkoutController.createCheckoutSession
+)
+
 router.post(
   "/create-order",
   express.raw({ type: "application/json" }),
