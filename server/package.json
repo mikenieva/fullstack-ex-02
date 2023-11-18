@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "stripecli": "stripe listen --forward-to localhost:3005/api/v1/checkout/create-order"
   },
   "keywords": [],
   "author": "",
