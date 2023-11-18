@@ -4,6 +4,7 @@
 import stripe from "stripe"
 import dotenv from "dotenv"
 import User from "./../models/User.js"
+import Cart from "./../models/Cart.js"
 
 dotenv.config()
 
@@ -154,7 +155,43 @@ const createOrder = async (req, res) => {
   //B. SI EL PAGO FUE FALLIDO, REGRESAR UN MENSAJE DE ERROR
 }
 
+const editCart = async (req, res) => {
+  console.log(req.user)
+  console.log(req.body)
+  // OBTENER EL ID DEL USUARIO
+  const userID = req.user.id
+
+  try {
+    // ENCONTRAR EL USUARIO EN BASE DE DATOS
+    console.log(userID)
+    const foundUser = await User.findById(userID).lean()
+
+    // OBTENER EL LISTADO DE PRODUCTOS CON DATOS
+    const { products } = req.body
+
+    // ACTUALIZAR EL CARRITO
+    const updatedCart = await Cart.findByIdAndUpdate(
+      foundUser.cart,
+      { products },
+      { new: true }
+    )
+
+    res.status(200).json({
+      msg: "Carrito actualizado",
+      updatedCart,
+    })
+  } catch (error) {
+    console.log(error)
+    console.log(error)
+    return res.status(500).json({
+      msg: "Hubo un error en servidor",
+      error,
+    })
+  }
+}
+
 export default {
   createOrder,
   createCheckoutSession,
+  editCart,
 }

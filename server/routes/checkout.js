@@ -2,7 +2,7 @@
 
 import express from "express"
 import checkoutController from "../controllers/checkoutController.js"
-import bodyParser from "body-parser"
+import authorizaton from "./../middleware/authorization.js"
 
 const router = express.Router()
 
@@ -12,5 +12,7 @@ router.post(
   express.raw({ type: "application/json" }),
   checkoutController.createOrder
 )
+
+router.put("/edit-cart", authorizaton, checkoutController.editCart)
 
 export default router
