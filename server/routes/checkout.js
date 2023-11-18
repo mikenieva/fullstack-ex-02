@@ -9,7 +9,7 @@ const router = express.Router()
 router.get("/create-checkout-session", checkoutController.createCheckoutSession)
 router.post(
   "/create-order",
-  bodyParser.raw({ type: "application/json" }),
+  express.raw({ type: "application/json" }),
   checkoutController.createOrder
 )
 

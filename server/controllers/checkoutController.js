@@ -65,25 +65,24 @@ const createOrder = async (req, res) => {
   // (SIEMPRE ES ASÍ)
 
   // TODO: EVALUAR LA FIRMA DE SEGURIDAD CON WEBHOOKS
-  // const sig = req.headers["stripe-signature"]
-  // const endpointSecret = process.env.STRIPE_WH_SIGNING_SECRET
-  // console.log(req.body)
-  // console.log(sig)
-  // console.log(endpointSecret)
+  const sig = req.headers["stripe-signature"]
+  const endpointSecret = process.env.STRIPE_WH_SIGNING_SECRET
+  console.log(req.body)
+  console.log(sig)
+  console.log(endpointSecret)
 
   // let event
 
   // 2. VERIFICACIÓN DEL EVENTO DE STRIPE (VERIFICAR QUE SÍ ES STRIPE Y NO UN ATACANTE)
-  // try {
-  // CONSTRUIR EL EVENTO DE STRIPE Y CONFIRMARLO
-  // event = stripeKey.webhooks.constructEvent(req.body, sig, endpointSecret)
-  // } catch (error) {
-  //   console.log("error", error)
-  //   res.status(400).json({
-  //     msg: error,
-  //   })
-  //   return
-  // }
+  try {
+    event = stripeKey.webhooks.constructEvent(req.body, sig, endpointSecret)
+  } catch (error) {
+    console.log("error", error)
+    res.status(400).json({
+      msg: error,
+    })
+    return
+  }
 
   // 3. EVALUAR EL EVENTO
   // A. SI EL PAGO EXITOSO, OBTENER EL INVOICE ( EL RECIBO)
