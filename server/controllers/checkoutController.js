@@ -1,4 +1,4 @@
-// import Cart from "../models/Cart"
+// server/controllers/checkoutController.js
 
 // IMPORTAR STRIPE Y CONFIGURAR CLAVE DE STRIPE
 import stripe from "stripe"
@@ -38,7 +38,6 @@ const createCheckoutSession = async (req, res) => {
   console.log(line_items)
 
   // 5. CREACIÓN DE CHECKOUT EN STRIPE
-
   try {
     const session = await stripeKey.checkout.sessions.create({
       line_items,
