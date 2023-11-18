@@ -21,7 +21,6 @@ import connectDB from "./config/db.js"
 // 2. INICIALIZADORES
 const app = express()
 app.use(cors())
-app.use(express.json())
 dotenv.config()
 
 connectDB()
@@ -46,7 +45,16 @@ const swaggerDocs = swaggerJSDoc(swaggerOptions)
 
 // 3. RUTAS
 
-// A. APLICACIÓN
+// A. WEBHOOKS
+app.use((req, res, next) => {
+  if (req.originalUrl === "/api/v1/checkout/create-order") {
+    next()
+  } else {
+    express.json()(req, res, next)
+  }
+})
+
+// B. APLICACIÓN
 // PROD: https://midominio.com/
 // DEV: localhost:3005/
 app.use("/api/v1/users", userRoute)

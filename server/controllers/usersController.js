@@ -11,14 +11,15 @@ const readAll = (req, res) => {
 }
 
 const create = async (req, res) => {
-  const { name, lastname, email, password } = req.body
+  const { name, lastname, country, address, zipcode, email, password } =
+    req.body
 
   // 1. CAPA DE CONTRASEÑA
   // ESTABLECER EL NIVEL DE DIFICULTAD DE ENCRIPTAMIENTO DEL PASSWORD
   const salt = await bcryptjs.genSalt(10)
 
   // 1A. CREAR CARRITO DE COMPRAS
-  const newCart = await Cart.create()
+  const newCart = await Cart.create({})
 
   // ENCRIPTAR EL PASSWORD
   const hashedPassword = await bcryptjs.hash(password, salt)
@@ -27,6 +28,9 @@ const create = async (req, res) => {
   const newUser = await User.create({
     name,
     lastname,
+    country,
+    address,
+    zipcode,
     email,
     password: hashedPassword,
     cart: newCart,
