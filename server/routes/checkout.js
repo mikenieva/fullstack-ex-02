@@ -2,7 +2,7 @@
 
 import express from "express"
 import checkoutController from "../controllers/checkoutController.js"
-import authorizaton from "./../middleware/authorization.js"
+import authorization from "./../middleware/authorization.js"
 
 const router = express.Router()
 
@@ -13,6 +13,6 @@ router.post(
   checkoutController.createOrder
 )
 
-router.put("/edit-cart", authorizaton, checkoutController.editCart)
+router.put("/edit-cart", authorization, checkoutController.editCart)
 
 export default router
