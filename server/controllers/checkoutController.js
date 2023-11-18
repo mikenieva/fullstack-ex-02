@@ -67,64 +67,47 @@ const createCheckoutSession = async (req, res) => {
 // TODOS LOS DATOS DE LA ORDEN QUE HIZO EL USUARIO (YA LO PAGÓ) Y NOSOTROS
 // VAMOS A GENERAR EN BASE DE DATOS SU RECIBO.
 const createOrder = async (req, res) => {
-  // 1. OBTENER LA FIRMA DE STRIPE SECRETA WEBHOOKS
-  // (SIEMPRE ES ASÍ)
-
-  // TODO: EVALUAR LA FIRMA DE SEGURIDAD CON WEBHOOKS
-  const sig = req.headers["stripe-signature"]
-  const endpointSecret = process.env.STRIPE_WH_SIGNING_SECRET
-  console.log(req.body)
-  console.log(sig)
-  console.log(endpointSecret)
-
-  // let event
-
-  // 2. VERIFICACIÓN DEL EVENTO DE STRIPE (VERIFICAR QUE SÍ ES STRIPE Y NO UN ATACANTE)
   try {
-    event = stripeKey.webhooks.constructEvent(req.body, sig, endpointSecret)
-  } catch (error) {
-    console.log("error", error)
-    res.status(400).json({
-      msg: error,
-    })
-    return
-  }
+    // 1. OBTENER LA FIRMA DE STRIPE SECRETA WEBHOOKS
+    // (SIEMPRE ES ASÍ)
+    const sig = req.headers["stripe-signature"]
+    const endpointSecret = process.env.STRIPE_WH_SIGNING_SECRET
+    console.log(sig)
+    console.log(endpointSecret)
 
-  // 3. EVALUAR EL EVENTO
-  // A. SI EL PAGO EXITOSO, OBTENER EL INVOICE ( EL RECIBO)
+    // 2. CONSTRUIR EL EVENTO CON TODOS LOS DATOS SENSIBLES DE STRIPE
+    // EL EVENTO ES EL OBJETO QUE INCLUYE LOS RECIBOS Y LAS CONFIRMACIONES DE PAGO DEL USUARIO (DE SU ÚLTIMO STRIPE CHECKOUT)
+    let event = stripeKey.webhooks.constructEvent(req.body, sig, endpointSecret)
+    console.log(event)
 
-  console.log("req.body.data", req.body.data)
-  console.log("req.body.object", req.body.data.object)
-
-  let event = req.body.type // "charge.succeeded"
-
-  try {
-    switch (event) {
-      // SI EL PAGO SE EJECUTÓ CORRECTAMENTE
+    // 3. EVALUAMOS EL EVENTO DE STRIPE
+    switch (event.type) {
+      // A. SI EL EVENTO FUE UN CARGO EXITOSO AL USUARIO
       case "charge.succeeded":
-        const paymentIntent = req.body.data.object
+        // GENERAR VARIABLES PARA ARMAR NUESTRO GUARDADO EN BASE DE DATOS
+        const paymentIntent = event.data.object
+        console.log(paymentIntent)
 
-        // PULIR DATOS PARA ENTREGA A BD
         const email = paymentIntent.billing_details.email
-        const receiptURL = paymentIntent.receipt_url
+        console.log(email)
+
+        const receiptURL = paymentIntent.receipt_url // https://receipt.stripe.com/12312/!2312/23123
+        console.log(receiptURL)
+
         const receiptID = receiptURL
           .split("/")
           .filter((item) => item)
-          .pop()
+          .pop() // !2312
+        console.log(receiptID)
+
         const amount = paymentIntent.amount
+        console.log(amount)
+
         const date_created = paymentIntent.created
+        console.log(date_created)
 
-        console.log("email", email)
-        console.log("receiptURL", receiptURL)
-        console.log("receiptID", receiptID)
-        console.log("amount", amount)
-        console.log("data_created", date_created)
-
-        // GUARDAR EN BASE DE DATOS
         const paymentDB = await User.findOneAndUpdate(
-          {
-            email,
-          },
+          { email },
           {
             $push: {
               receipts: {
@@ -136,28 +119,29 @@ const createOrder = async (req, res) => {
             },
           },
           { new: true }
-        )
+        ).lean()
 
-        console.log("paymentDB", paymentDB)
+        console.log(paymentDB)
+        res.status(200).json({
+          msg: "Datos actualizados con éxito. Pago correcto.",
+        })
 
         break
 
       default:
-        console.log("Evento no encontrado")
-
+        console.log("Evento sin coincidencia.")
         res.status(200).json({
-          msg: "Evento no encontrado.",
+          msg: "Evento sin coincidencia",
         })
     }
+
+    return
   } catch (error) {
-    console.log("error", error)
-    res.status(400).json({
-      msg: error,
+    console.log(error)
+    res.status(500).json({
+      msg: "Hubo un problema en la generación de recibos para el usuario.",
     })
   }
-
-  // ACTUALIZAR A BASE DE DATOS
-  //B. SI EL PAGO FUE FALLIDO, REGRESAR UN MENSAJE DE ERROR
 }
 
 const editCart = async (req, res) => {
