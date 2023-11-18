@@ -118,6 +118,11 @@ const create = async (req, res) => {
     })
   } catch (error) {
     console.log("error", error)
+
+    return res.status(500).json({
+      msg: "Hubo un problema en la creación de la pizza",
+      error,
+    })
   }
 }
 
