@@ -1,3 +1,5 @@
+// ./server/index.js
+
 // 1. IMPORTACIONES
 // A. LIBRERÍAS
 import express from "express"
@@ -11,12 +13,17 @@ import { fileURLToPath } from "url"
 // B. ARCHIVOS
 import userRoute from "./routes/users.js"
 import carRoute from "./routes/cars.js"
+import pizzaRoute from "./routes/pizzas.js"
+import toppingsRoute from "./routes/toppings.js"
+import checkoutRoute from "./routes/checkout.js"
+import connectDB from "./config/db.js"
 
 // 2. INICIALIZADORES
 const app = express()
 app.use(cors())
-app.use(express.json())
 dotenv.config()
+
+connectDB()
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -37,12 +44,23 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJSDoc(swaggerOptions)
 
 // 3. RUTAS
+// A. WEBHOOKS
+app.use((req, res, next) => {
+  if (req.originalUrl === "/api/v1/checkout/create-order") {
+    next()
+  } else {
+    express.json()(req, res, next)
+  }
+})
 
-// A. APLICACIÓN
+// B. APLICACIÓN
 // PROD: https://midominio.com/
 // DEV: localhost:3005/
 app.use("/api/v1/users", userRoute)
 app.use("/api/v1/cars", carRoute)
+app.use("/api/v1/pizzas", pizzaRoute)
+app.use("/api/v1/toppings", toppingsRoute)
+app.use("/api/v1/checkout", checkoutRoute)
 
 // B. DOCUMENTACIÓN
 app.use("/", swaggerUI.serve, swaggerUI.setup(swaggerDocs))

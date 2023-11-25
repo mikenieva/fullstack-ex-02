@@ -17,3 +17,9 @@ node_modules/
     - Express
     - Nodemon
     - CORS. Librería que permite abrir permisos a conexiones de terceros.
+
+
+
+CÓDIGOS DE RESPUESTA EN SERVER
+
+5841 - Usuario no se encuentra en base de datos.
