@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom"
 import Layout from "./components/Layout"
 import PizzasPage from "./pages/pizzas"
 import PizzaState from "./context/Pizza/PizzaState"
+import PizzaPage from "./pages/pizzas/pizza"
 
 function Router() {
   return (
@@ -54,14 +55,7 @@ function Router() {
                 }
               />
               <Route path="/pizzas" element={<PizzasPage />} />
-              <Route
-                path="/pizzas/:slug"
-                element={
-                  <>
-                    <p>Esta es una pizza individual</p>
-                  </>
-                }
-              />
+              <Route path="/pizzas/:slug" element={<PizzaPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

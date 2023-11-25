@@ -29,7 +29,7 @@ const readOne = async (req, res) => {
 
   try {
     const pizza = await Pizza.findOne({
-      _id: id,
+      slug: id,
     })
 
     if (!pizza) {

@@ -8,6 +8,15 @@ const PizzaReducer = (globalState, action) => {
         pizzas: action.payload,
       }
 
+    case "GET_PIZZA":
+      return {
+        ...globalState,
+        pizza: {
+          ...globalState.pizza,
+          ...action.payload,
+        },
+      }
+
     default:
       return globalState
   }
