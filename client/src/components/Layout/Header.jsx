@@ -1,14 +1,28 @@
 // ./src/components/Layout/Header.jsx
 import { Link } from "react-router-dom"
 import UserContext from "../../context/User/UserContext"
-import { useContext } from "react"
+import { useContext, useEffect, useState } from "react"
 
 function Header() {
+  const [user, setUser] = useState({
+    name: "",
+    lastname: "",
+  })
+
   const userCtx = useContext(UserContext)
 
-  const { authStatus, logoutUser } = userCtx
+  const { authStatus, currentUser, logoutUser } = userCtx
 
-  console.log(logoutUser)
+  useEffect(() => {
+    if (currentUser) {
+      const { name, lastname } = currentUser
+
+      setUser({
+        name,
+        lastname,
+      })
+    }
+  }, [currentUser])
 
   return (
     <div>
@@ -19,7 +33,9 @@ function Header() {
 
         {authStatus ? (
           <>
-            <p>Usuario loggeado</p>
+            <p>
+              Te damos la bienvenida, {user.name} {user.lastname}
+            </p>
             <button onClick={logoutUser}>
               <Link to="/">Cerrar sesión</Link>
             </button>
