@@ -14,11 +14,14 @@ function Header() {
         <li>
           <Link to="/">Inicio</Link>
         </li>
-        <li>
-          <Link to="/">Cerrar sesión</Link>
-        </li>
+
         {authStatus ? (
-          <p>Usuario loggeado</p>
+          <>
+            <p>Usuario loggeado</p>
+            <li>
+              <Link to="/">Cerrar sesión</Link>
+            </li>
+          </>
         ) : (
           <>
             <li>
