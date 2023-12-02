@@ -4,6 +4,7 @@ import { useReducer } from "react"
 import axiosClient from "../../config/axios"
 import UserContext from "./UserContext"
 import UserReducer from "./UserReducer"
+import getToken from "./../../config/token"
 
 // POR HACER: IMPORTAR AXIOS
 const UserState = (props) => {
@@ -46,6 +47,28 @@ const UserState = (props) => {
   // B. INICIO DE SESIÓN DE USUARIO
 
   // C. VERIFICACIÓN DE TOKEN PARA NAVEGACIÓN
+  const verifyingToken = async () => {
+    // 1. NECESITO LEER EL TOKEN DEL USUARIO QUE ESTÁ EN LOCAL STORAGE
+    getToken()
+    // 2. REALIZAR LA LLAMADA VÍA AXIOS
+    try {
+      const res = await axiosClient.get("/api/v1/users/verifytoken")
+      console.log(res)
+
+      const userData = res.data.data
+      console.log(userData)
+
+      dispatch({
+        type: "GET_DATA_USER",
+        payload: userData,
+      })
+    } catch (error) {
+      console.log(error)
+      return
+    }
+
+    // 3. NECESITO EJECUTAR UN DISPATCH PARA QUE EL REDUCER PUEDA ACTUALIZAR EL ESTADO GLOBAL
+  }
 
   // D. CERRAR SESIÓN
 
@@ -65,6 +88,7 @@ const UserState = (props) => {
         currentUser: globalState.currentUser,
         authStatus: globalState.authStatus,
         registerUser,
+        verifyingToken,
       }}
     >
       {props.children}
