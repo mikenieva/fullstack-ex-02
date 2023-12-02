@@ -2,6 +2,7 @@
 
 const UserReducer = (globalState, action) => {
   switch (action.type) {
+    case "SUCCESSFUL_LOGIN":
     case "SUCCESSFUL_REGISTER":
       localStorage.setItem("token", action.payload)
       return {

@@ -45,6 +45,22 @@ const UserState = (props) => {
   }
 
   // B. INICIO DE SESIÓN DE USUARIO
+  const loginUser = async (form) => {
+    try {
+      const res = await axiosClient.post("/api/v1/users/login", form)
+      console.log(res)
+
+      const token = res.data.data
+
+      dispatch({
+        type: "SUCCESSFUL_LOGIN",
+        payload: token,
+      })
+    } catch (error) {
+      console.log(error)
+      return
+    }
+  }
 
   // C. VERIFICACIÓN DE TOKEN PARA NAVEGACIÓN
   const verifyingToken = async () => {
@@ -98,6 +114,7 @@ const UserState = (props) => {
         registerUser,
         verifyingToken,
         logoutUser,
+        loginUser,
       }}
     >
       {props.children}

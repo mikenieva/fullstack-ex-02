@@ -26,7 +26,10 @@ function Router() {
                     </>
                   }
                 />
-                <Route path="/iniciar-sesion" element={<Login />} />
+                <Route
+                  path="/iniciar-sesion"
+                  element={<Auth component={Login} />}
+                />
                 <Route path="/registro" element={<Auth component={SignUp} />} />
                 <Route
                   path="/perfil"
