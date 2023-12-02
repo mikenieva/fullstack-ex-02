@@ -71,6 +71,14 @@ const UserState = (props) => {
   }
 
   // D. CERRAR SESIÓN
+  const logoutUser = () => {
+    console.log("borrando usuario")
+
+    dispatch({
+      type: "LOGOUT_USER",
+      payload: "Usuario cerró sesión exitosamente.",
+    })
+  }
 
   // E. EDITAR CARRITO DE COMPRA
 
@@ -89,6 +97,7 @@ const UserState = (props) => {
         authStatus: globalState.authStatus,
         registerUser,
         verifyingToken,
+        logoutUser,
       }}
     >
       {props.children}

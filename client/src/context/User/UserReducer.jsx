@@ -9,6 +9,18 @@ const UserReducer = (globalState, action) => {
         authStatus: true,
       }
 
+    case "LOGOUT_USER":
+      localStorage.removeItem("token")
+
+      console.log("token borrado")
+
+      return {
+        ...globalState,
+        currentUser: null,
+        authStatus: false,
+        msg: action.payload,
+      }
+
     case "GET_DATA_USER":
       return {
         ...globalState,

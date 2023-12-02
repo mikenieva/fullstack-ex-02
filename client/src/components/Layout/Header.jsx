@@ -6,7 +6,9 @@ import { useContext } from "react"
 function Header() {
   const userCtx = useContext(UserContext)
 
-  const { authStatus } = userCtx
+  const { authStatus, logoutUser } = userCtx
+
+  console.log(logoutUser)
 
   return (
     <div>
@@ -18,9 +20,9 @@ function Header() {
         {authStatus ? (
           <>
             <p>Usuario loggeado</p>
-            <li>
+            <button onClick={logoutUser}>
               <Link to="/">Cerrar sesión</Link>
-            </li>
+            </button>
           </>
         ) : (
           <>
