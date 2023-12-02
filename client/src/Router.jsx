@@ -8,7 +8,10 @@ import PizzaPage from "./pages/pizzas/pizza"
 import Login from "./pages/iniciar-sesion"
 import SignUp from "./pages/registro"
 import UserState from "./context/User/UserState"
+
 import Auth from "./routes/Auth"
+import Public from "./routes/Public"
+import Home from "./pages/home"
 
 function Router() {
   return (
@@ -18,14 +21,7 @@ function Router() {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Layout />}>
-                <Route
-                  index
-                  element={
-                    <>
-                      <p>Este es el home</p>
-                    </>
-                  }
-                />
+                <Route index element={<Public component={Home} />} />
                 <Route
                   path="/iniciar-sesion"
                   element={<Auth component={Login} />}
@@ -47,8 +43,14 @@ function Router() {
                     </>
                   }
                 />
-                <Route path="/pizzas" element={<PizzasPage />} />
-                <Route path="/pizzas/:slug" element={<PizzaPage />} />
+                <Route
+                  path="/pizzas"
+                  element={<Public component={PizzasPage} />}
+                />
+                <Route
+                  path="/pizzas/:slug"
+                  element={<Public component={PizzaPage} />}
+                />
               </Route>
             </Routes>
           </BrowserRouter>
