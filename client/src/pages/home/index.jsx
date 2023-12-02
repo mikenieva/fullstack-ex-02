@@ -1,3 +1,5 @@
+// ./src/pages/home/index.jsx
+
 import { Link } from "react-router-dom"
 
 function Home() {

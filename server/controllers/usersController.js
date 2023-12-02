@@ -139,7 +139,7 @@ const login = async (req, res) => {
 const verifyToken = async (req, res) => {
   try {
     console.log("req.user", req.user)
-    const foundUser = await User.findById(req.user.id)
+    const foundUser = await User.findById(req.user.id).select("-password")
     console.log("foundUser", foundUser)
 
     return res.json({
