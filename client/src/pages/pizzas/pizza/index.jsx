@@ -1,13 +1,19 @@
 // ./src/pages/pizzas/pizza/index.jsx
 
 import { useEffect } from "react"
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 
 import { useContext } from "react"
 import PizzaContext from "../../../context/Pizza/PizzaContext"
 import priceFormatter from "../../../lib/priceFormatter"
 
+import UserContext from "../../../context/User/UserContext"
+
 function PizzaPage() {
+  const userCtx = useContext(UserContext)
+
+  const { authStatus } = userCtx
+
   const params = useParams()
   console.log(params)
   const { slug } = params
@@ -21,6 +27,8 @@ function PizzaPage() {
   useEffect(() => {
     getPizza(slug)
   }, [])
+
+  const quantityOptions = [0, 1, 2, 3, 4, 5]
 
   return (
     <>
@@ -44,6 +52,26 @@ function PizzaPage() {
                       <p>
                         Precio: {priceFormatter(price)} {currency}{" "}
                       </p>
+
+                      {authStatus ? (
+                        <>
+                          <select>
+                            {quantityOptions.map((element) => {
+                              return (
+                                <>
+                                  <option value={element}>{element}</option>
+                                </>
+                              )
+                            })}
+                          </select>
+
+                          <button>Agregar al carrito</button>
+                        </>
+                      ) : (
+                        <Link to="/iniciar-sesion">
+                          <button>Crea tu carrito con tu sesión</button>
+                        </Link>
+                      )}
                     </li>
                   </>
                 )

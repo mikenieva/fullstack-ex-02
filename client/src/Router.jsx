@@ -11,7 +11,9 @@ import UserState from "./context/User/UserState"
 
 import Auth from "./routes/Auth"
 import Public from "./routes/Public"
+import Private from "./routes/Private"
 import Home from "./pages/home"
+import Cart from "./pages/carrito"
 
 function Router() {
   return (
@@ -35,14 +37,7 @@ function Router() {
                     </>
                   }
                 />
-                <Route
-                  path="/carrito"
-                  element={
-                    <>
-                      <p>Está página es el carrito de compras</p>
-                    </>
-                  }
-                />
+                <Route path="/carrito" element={<Private component={Cart} />} />
                 <Route
                   path="/pizzas"
                   element={<Public component={PizzasPage} />}

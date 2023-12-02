@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom"
 import UserContext from "../../context/User/UserContext"
 import { useContext, useEffect, useState } from "react"
+import { Cart } from "react-bootstrap-icons"
 
 function Header() {
   const [user, setUser] = useState({
@@ -39,6 +40,12 @@ function Header() {
             <button onClick={logoutUser}>
               <Link to="/">Cerrar sesión</Link>
             </button>
+            <p style={{ textDecoration: "underline" }}>
+              <Link to="/carrito">
+                <Cart style={{ marginRight: "8px" }} /> Tu carrito de compras:{" "}
+                <span>3 pizzas</span>
+              </Link>
+            </p>
           </>
         ) : (
           <>
