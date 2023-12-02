@@ -4,7 +4,6 @@ import UserContext from "./UserContext"
 import UserReducer from "./UserReducer"
 
 // POR HACER: IMPORTAR AXIOS
-
 const UserState = (props) => {
   // 1. INITIAL STATE
   const initialState = {
@@ -30,7 +29,6 @@ const UserState = (props) => {
     console.log(form)
     try {
       const res = await axiosClient.post("/api/v1/users/create", form)
-      console.log(res)
 
       const token = res.data.data
 
