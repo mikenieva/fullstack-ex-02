@@ -8,6 +8,7 @@ import PizzaPage from "./pages/pizzas/pizza"
 import Login from "./pages/iniciar-sesion"
 import SignUp from "./pages/registro"
 import UserState from "./context/User/UserState"
+import Auth from "./routes/Auth"
 
 function Router() {
   return (
@@ -25,9 +26,8 @@ function Router() {
                     </>
                   }
                 />
-
                 <Route path="/iniciar-sesion" element={<Login />} />
-                <Route path="/registro" element={<SignUp />} />
+                <Route path="/registro" element={<Auth component={SignUp} />} />
                 <Route
                   path="/perfil"
                   element={
