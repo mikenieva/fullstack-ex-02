@@ -20,4 +20,6 @@ router.post(
 
 router.put("/edit-cart", authorization, checkoutController.editCart)
 
+router.get("/get-cart", authorization, checkoutController.getCart)
+
 export default router
