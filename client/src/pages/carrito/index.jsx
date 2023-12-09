@@ -1,60 +1,22 @@
-import { useState, useEffect, useContext } from "react"
-
+import { useEffect, useContext } from "react"
+import { useCart } from "../../hooks/useCart"
+import { Link } from "react-router-dom"
 import UserContext from "../../context/User/UserContext"
 
 export default function Cart() {
   const userCtx = useContext(UserContext)
 
   const { cart, sessionURL, getCheckoutSession, editCart } = userCtx
-  const [total, setTotal] = useState(0)
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    getCheckoutSession()
-  }
+  const { total, handleSubmit, handleChange, handleRemove } = useCart(
+    cart,
+    getCheckoutSession,
+    editCart
+  )
 
   useEffect(() => {
     if (sessionURL) window.location.href = sessionURL
   }, [sessionURL])
-
-  useEffect(() => {
-    const reduceTotalFromOrder = () => {
-      return cart.reduce((acc, cv) => {
-        const updatedQuantity = (cv.price / 100) * cv.quantity
-        return updatedQuantity + acc
-      }, 0)
-    }
-
-    const getOrderDetails = () => {
-      const total = reduceTotalFromOrder()
-      setTotal(total)
-    }
-
-    getOrderDetails()
-  }, [cart])
-
-  const handleChange = (e) => {
-    const updatedCart = cart.map((elt) => {
-      return elt.priceID === e.target.name
-        ? {
-            ...elt,
-            quantity: parseInt(e.target.value),
-          }
-        : elt
-    })
-
-    editCart(updatedCart)
-  }
-
-  const handleRemove = (e, currentPriceID) => {
-    e.preventDefault()
-
-    const updatedCart = cart.filter((elt) => {
-      return elt.priceID !== currentPriceID
-    })
-
-    editCart(updatedCart)
-  }
 
   return (
     <div>
@@ -62,9 +24,12 @@ export default function Cart() {
         Tu carrito de compras:
         <ul>
           {cart.map((e) => {
+            console.log(e)
             return (
               <li key={e.id}>
-                <h3>{e.name}</h3>
+                <h3>
+                  <Link to={`/pizzas/${e.slug}`}>{e.name}</Link>
+                </h3>
                 <p>{e.size}</p>
                 <p> ${((e.price / 100) * e.quantity).toFixed(2)}</p>
                 <select
