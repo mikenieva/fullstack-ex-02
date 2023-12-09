@@ -8,7 +8,7 @@ import { Toaster } from "react-hot-toast"
 function Layout() {
   return (
     <>
-      <Toaster />
+      <Toaster position="top-right" />
       <header>
         <Header />
       </header>

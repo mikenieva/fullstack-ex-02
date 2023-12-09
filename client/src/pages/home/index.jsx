@@ -2,13 +2,18 @@
 
 import { Link } from "react-router-dom"
 import { useQuery } from "../../hooks/useQuery"
-import { useEffect } from "react"
+import { useContext, useEffect } from "react"
 
 import toast from "react-hot-toast"
+import UserContext from "../../context/User/UserContext"
 
-
+function notify(message) {
+  toast(message)
+}
 
 function Home() {
+  const { editCart } = useContext(UserContext)
+
   const query = useQuery()
   console.log(query)
 
@@ -16,9 +21,12 @@ function Home() {
   console.log(status)
 
   useEffect(() => {
-    if(status === "successful") 
-
-  }, [status])
+    console.log(status)
+    if (status === "successful") {
+      notify("Pago realizado con éxito.")
+      editCart([])
+    }
+  }, [])
 
   return (
     <div>
