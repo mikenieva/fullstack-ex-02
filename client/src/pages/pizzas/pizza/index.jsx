@@ -1,32 +1,21 @@
 // ./src/pages/pizzas/pizza/index.jsx
-
-import { useEffect } from "react"
 import { Link, useParams } from "react-router-dom"
-
-import { useContext } from "react"
-import PizzaContext from "../../../context/Pizza/PizzaContext"
 import priceFormatter from "../../../lib/priceFormatter"
-
-import UserContext from "../../../context/User/UserContext"
+import usePizza from "../../../hooks/usePizza"
 
 function PizzaPage() {
-  const userCtx = useContext(UserContext)
-
-  const { authStatus } = userCtx
-
   const params = useParams()
-  console.log(params)
   const { slug } = params
 
-  const pizzaCtx = useContext(PizzaContext)
-  const { pizza, getPizza } = pizzaCtx
-  console.log(pizza)
+  // CUSTOM HOOK
+  const { authStatus, cart, pizza, localPrices, handleChange, handleSubmit } =
+    usePizza(slug)
 
   const { _id, idStripe, name, currency, prices, img, description } = pizza
 
-  useEffect(() => {
-    getPizza(slug)
-  }, [])
+  // LOCALPRICES = {...PRICES, QUANTITY }
+  console.log(localPrices)
+  console.log(prices)
 
   const quantityOptions = [0, 1, 2, 3, 4, 5]
 
@@ -38,49 +27,71 @@ function PizzaPage() {
         <p>{description}</p>
         <p>Id MongoDB: {_id}</p>
         <p>Id Stripe: {idStripe}</p>
-        <ul>
-          {prices.length !== 0 ? (
-            <>
-              {prices.map((element) => {
-                console.log(element)
-                const { price, size } = element
 
-                return (
-                  <>
-                    <li>
-                      <h2>Tipo de precio por tamaño: {size}</h2>
-                      <p>
-                        Precio: {priceFormatter(price)} {currency}{" "}
-                      </p>
+        <form onSubmit={handleSubmit}>
+          <ul>
+            {prices.length !== 0 ? (
+              <>
+                {localPrices.map((element) => {
+                  console.log(element)
+                  const { price, size, priceDescription } = element
 
-                      {authStatus ? (
-                        <>
-                          <select>
-                            {quantityOptions.map((element) => {
+                  return (
+                    <>
+                      <li>
+                        <h2>Tipo de precio por tamaño: {size}</h2>
+                        <p>
+                          Precio: {priceFormatter(price)} {currency}{" "}
+                        </p>
+
+                        {authStatus ? (
+                          <select
+                            type="option"
+                            name={`${element.id}`}
+                            data-pizza-name={name}
+                            data-pizza-size={size}
+                            data-pizza-pricedescription={priceDescription}
+                            data-pizza-price={price}
+                            data-pizza-img={img[0]}
+                            data-pizza-slug={slug}
+                            onChange={(evt) => {
+                              handleChange(evt)
+                            }}
+                          >
+                            {quantityOptions.map((qo) => {
                               return (
                                 <>
-                                  <option value={element}>{element}</option>
+                                  {qo === element.quantity ? (
+                                    <option selected value={qo}>
+                                      {qo}
+                                    </option>
+                                  ) : (
+                                    <option value={qo}>{qo}</option>
+                                  )}
                                 </>
                               )
                             })}
                           </select>
-
-                          <button>Agregar al carrito</button>
-                        </>
-                      ) : (
-                        <Link to="/iniciar-sesion">
-                          <button>Crea tu carrito con tu sesión</button>
-                        </Link>
-                      )}
-                    </li>
-                  </>
-                )
-              })}
-            </>
+                        ) : null}
+                      </li>
+                    </>
+                  )
+                })}
+              </>
+            ) : (
+              "No hay precios disponibles"
+            )}
+          </ul>
+          {authStatus ? (
+            <button type="submit">
+              {cart.length !== 0 ? "Modificar carrito" : "Agregar al carrito"}
+            </button>
           ) : (
-            "No hay precios disponibles"
+            <Link to="/iniciar-sesion">
+              <button>Crea tu carrito con tu sesión</button>
+            </Link>
           )}
-        </ul>
+        </form>
       </div>
     </>
   )
