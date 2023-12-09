@@ -5,14 +5,16 @@ import { useContext, useEffect, useState } from "react"
 import { Cart } from "react-bootstrap-icons"
 
 function Header() {
+  const [total, setTotal] = useState(0)
+
   const [user, setUser] = useState({
     name: "",
     lastname: "",
   })
 
   const userCtx = useContext(UserContext)
-
-  const { authStatus, currentUser, logoutUser } = userCtx
+  console.log(userCtx)
+  const { cart, authStatus, currentUser, logoutUser, getCart } = userCtx
 
   useEffect(() => {
     if (currentUser) {
@@ -24,6 +26,30 @@ function Header() {
       })
     }
   }, [currentUser])
+
+  console.log(cart)
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      await getCart()
+    }
+
+    fetchCart()
+  }, [currentUser])
+
+  useEffect(() => {
+    const getTotalProducts = () => {
+      const totalQty = cart.reduce((acc, cv) => {
+        return acc + cv.quantity
+      }, 0)
+
+      return totalQty
+    }
+
+    const totalQty = getTotalProducts()
+
+    setTotal(totalQty)
+  }, [cart])
 
   return (
     <div>
@@ -43,7 +69,7 @@ function Header() {
             <p style={{ textDecoration: "underline" }}>
               <Link to="/carrito">
                 <Cart style={{ marginRight: "8px" }} /> Tu carrito de compras:{" "}
-                <span>3 pizzas</span>
+                <span>{total}</span>
               </Link>
             </p>
           </>
