@@ -2,6 +2,7 @@
 
 import { useState, useContext } from "react"
 import UserContext from "../../context/User/UserContext"
+import Button from "../../components/Molecules/Button"
 
 function Login() {
   const [user, setUser] = useState({
@@ -47,7 +48,7 @@ function Login() {
           />
         </div>
 
-        <button>Iniciar sesión</button>
+        <Button message="Iniciar sesión" icon="check" />
       </form>
     </div>
   )
