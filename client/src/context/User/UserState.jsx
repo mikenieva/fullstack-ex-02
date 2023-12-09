@@ -21,6 +21,7 @@ const UserState = (props) => {
     },
     cart: [],
     authStatus: false,
+    sessionURL: null,
   }
 
   // 2. REDUCERS
@@ -150,6 +151,20 @@ const UserState = (props) => {
   }
 
   // G. CREAR SESIÓN DE STRIPE
+  const getCheckoutSession = async () => {
+    getToken()
+
+    const res = await axiosClient.get(
+      "/api/v1/checkout/create-checkout-session"
+    )
+
+    console.log(res)
+
+    dispatch({
+      type: "GET_CHECKOUT_SESSION",
+      payload: res.data.session_url,
+    })
+  }
 
   // H. EDITAR PERFIL
 
@@ -160,10 +175,15 @@ const UserState = (props) => {
       value={{
         currentUser: globalState.currentUser,
         authStatus: globalState.authStatus,
+        cart: globalState.cart,
+        sessionURL: globalState.sessionURL,
         registerUser,
         verifyingToken,
         logoutUser,
         loginUser,
+        editCart,
+        getCart,
+        getCheckoutSession,
       }}
     >
       {props.children}
